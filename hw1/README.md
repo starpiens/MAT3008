@@ -1,8 +1,11 @@
+# HW #1: Machine Epsilon
 Obtaining the machine epsilon of "float" and "double" in two ways.
 
 Machine epsilon is the smallest floating-point number which, 
 when added to the floating-point number 1.0, 
 produces a floating-point result different from 1.0.
+
+# Implementation
 
 ## Method 1: Using machar()
 `machar()` is a function included in the book, *'Numerical analysis in C'*.
@@ -31,3 +34,8 @@ Epsilon of double: 2.22045e-16 (0.0000000000000002220446049250313080847263336181
 the machine epsilon of float is around 1.19209e-07, 
 and that of double is around 2.22045e-16.
 The values obtained by two different methods were identical. 
+```
+Difference: 
+Epsilon of float:  0.00000000000000000000000
+Epsilon of double: 0.0000000000000000000000000000000000000000000000000000
+```
