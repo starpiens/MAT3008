@@ -5,6 +5,11 @@ Machine epsilon is the smallest floating-point number which,
 when added to the floating-point number 1.0, 
 produces a floating-point result different from 1.0.
 
+### Environment
+- Platform: x86_64-apple-darwin18.7.0
+- Compiler: clang-1001.0.46.4
+- C standard: C11
+
 # Implementation
 
 ## Method 1: Using machar()
