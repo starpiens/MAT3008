@@ -7,4 +7,5 @@ include_directories(.)
 
 add_executable(hw1
         machar.c
+        machar_double.c
         main.c)
