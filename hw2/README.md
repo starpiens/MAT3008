@@ -7,7 +7,7 @@ Solution to *Numerical Methods for Engineers, 7th ed.*
 - C standard: C99
 
 ## Chapter 3
-Approximations and Round-Off Errors
+Approximations and round-off errors
 
 ### 3.6
 ```
@@ -20,3 +20,29 @@ Approximate value: 6.737949e-03
 Relative error:    -3.450780e-07
 ```
 As shown above, second approach gives more precise value.
+
+## Chapter 4
+Truncation errors and the Taylor series
+
+### 4.2
+```
+Step #1: estimated 4.516886e-01, relative err 10.695721%
+Step #2: estimated 5.017962e-01, relative err 0.357954%
+Step #3: estimated 4.999646e-01, relative err 0.007087%
+Step #4: estimated 5.000004e-01, relative err 0.000087%
+Step #5: estimated 5.000000e-01, relative err 0.000001%
+Step #6: estimated 5.000000e-01, relative err 0.000000%
+Step #7: estimated 5.000000e-01, relative err 0.000000%
+Step #8: estimated 5.000000e-01, relative err 0.000000%
+Step #9: estimated 5.000000e-01, relative err 0.000000%
+```
+It found the exact value whithin 9 steps.  
+Note that the result of a line of code below 
+```c
+term *= -M_PI * M_PI / 9;
+```
+is more precise than
+```c
+term *= -(M_PI / 3) * (M_PI / 3);
+```
+because the former yields less roundoff error.
