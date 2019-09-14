@@ -6,10 +6,9 @@ Solution to *Numerical Methods for Engineers, 7th ed.*
 - Compiler: clang-1100.0.33.8
 - C standard: C99
 
-## Chapter 3
-Approximations and round-off errors
+## Chapter 3: Approximations and Round-Off Errors
 
-### 3.6
+### Problem 3.6
 ```
 Method #1
 Approximate value: 6.706341e-03
@@ -21,8 +20,22 @@ Relative error:    -3.450780e-07
 ```
 As shown above, second approach gives more precise value.
 
-## Chapter 4
-Truncation errors and the Taylor series
+### Problem 3.7
+**3-digits with chopping.**  
+```
+6x = 3.46
+x^2 = 0.332, 3x^2 = 0.996, 1-3x^2 = 0.004.
+f'(0.557) ≈ 3.46/0.004^2 = 216250
+```
+**4-digits with chopping.**
+```
+6x = 3.462
+x^2 = 0.3329, 3x^2 = 0.9987, 1-3x^2=0.0013.
+f'(0.557) ≈ 3.462/0.0013^2 = 2048520.710059172
+```
+
+
+## Chapter 4: Truncation errors and the Taylor series
 
 ### 4.2
 ```
