@@ -68,3 +68,9 @@ Step #2: estimated 78.000000, relative err 85.920578%
 Step #3: estimated 354.000000, relative err 36.101083%
 Step #4: estimated 554.000000, relative err 0.000000%
 ```
+
+### Problem 4.12
+The estimated error using first-order analysis: `𝜟𝒗 = |𝝏𝒗/𝝏𝒄| ・ 𝜟𝒄 + |𝝏𝒗/𝝏𝒎| ・ 𝜟𝒎`
+```
+Estimated v: 30.484373 ± 2.776149
+```
