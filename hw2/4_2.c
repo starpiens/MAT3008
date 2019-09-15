@@ -9,4 +9,5 @@ void solve_4_2() {
         sum += term;
         printf("Step #%d: estimated %e, relative err %f%%\n", i, sum, fabs(.5 - sum) * 100 / sum);
     }
+    printf("\n");
 }

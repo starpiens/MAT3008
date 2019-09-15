@@ -37,7 +37,7 @@ f'(0.557) ≈ 3.462/0.0013^2 = 2048520.710059172
 
 ## Chapter 4: Truncation errors and the Taylor series
 
-### 4.2
+### Problem 4.2
 ```
 Step #1: estimated 4.516886e-01, relative err 10.695721%
 Step #2: estimated 5.017962e-01, relative err 0.357954%
@@ -59,3 +59,12 @@ is more precise than
 term *= -(M_PI / 3) * (M_PI / 3);
 ```
 because the former yields less roundoff error.
+
+### Problem 4.5
+```
+True value: 554.000000
+Step #1: estimated -62.000000, relative err 111.191336%
+Step #2: estimated 78.000000, relative err 85.920578%
+Step #3: estimated 354.000000, relative err 36.101083%
+Step #4: estimated 554.000000, relative err 0.000000%
+```
