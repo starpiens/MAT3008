@@ -15,4 +15,4 @@ add_executable(
         nr/rtsafe.c
         nr/bessj0.c
         nr/nrerror.c
-        nr/zbrak.c nr/bessj1.c)
+        nr/zbrak.c nr/bessj1.c problem0.c run_funcs.c run_funcs.h problem1.c problem2.c problem3.c)
