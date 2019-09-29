@@ -6,4 +6,4 @@ file(GLOB_RECURSE NR "../nr/src/*.c")
 
 include_directories(../nr/include)
 
-add_executable(hw4 main.c problem1.c ${NR})
+add_executable(hw4 main.c ${NR} problem1.c problem2.c run_funcs.c)
