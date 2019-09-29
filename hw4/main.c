@@ -1,6 +1,11 @@
 #include <stdio.h>
+#include "nr.h"
+
+void solve_problem1();
 
 int main() {
-    printf("Hello, World!\n");
+
+    solve_problem1();
+
     return 0;
 }
