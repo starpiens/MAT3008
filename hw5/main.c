@@ -1,21 +1,48 @@
 #include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
+#include "nr.h"
 
 float *run_gaussj(int N, float **A, float *b) {
+    const int M = 1;
+    // Copy elements.
+    float **cpy_A = calloc(N + 1, sizeof(float *));
+    for (int i = 1; i <= N; i++) {
+        cpy_A[i] = calloc(N + 1, sizeof(float));
+        memcpy(cpy_A[i], A[i], (N + 1) * sizeof(float));
+    }
+    float **cpy_b = calloc(N + 1, sizeof(float *));
+    for (int i = 1; i <= N; i++) {
+        cpy_b[i] = calloc(M + 1, sizeof(float));
+        cpy_b[i][1] = b[i];
+    }
+
+    gaussj(cpy_A, N, cpy_b, M);
+    float *ret = calloc(N + 1, sizeof(float));
+    for (int i = 1; i <= N; i++)
+        ret[i] = cpy_b[i][1];
+
+    for (int i = 1; i <= N; i++)
+        free(cpy_A[i]);
+    free(cpy_A);
+    for (int i = 1; i <= N; i++)
+        free(cpy_b[i]);
+    free(cpy_b);
+
+    return ret;
+}
+
+float *run_ludcmp(int N, float **A, float *b) {
 
 }
 
-float run_ludcmp(int N, float **A, float *b) {
-
-}
-
-float run_svdcmp(int N, float **A, float *b) {
+float *run_svdcmp(int N, float **A, float *b) {
 
 }
 
 /**
- * Load data from `ifp`.
+ * Allocate memory and load data from `ifp`.
  * @param ifp Input file pointer.
  * @param N Order of matrix A and vector b.
  * @param A 2D array representing matrix A.
@@ -58,8 +85,8 @@ int main(int argc, char *argv[]) {
     fclose(ifp);
 
     run_gaussj(N, A, b);
-    run_ludcmp(N, A, b);
-    run_svdcmp(N, A, b);
+    // run_ludcmp(N, A, b);
+    // run_svdcmp(N, A, b);
 
     for (int i = 1; i <= N; i++)
         free(A[i]);
