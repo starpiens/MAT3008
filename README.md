@@ -3,4 +3,5 @@
 
 - [HW #1](https://github.com/starlettkim/MAT3008/tree/master/hw1): Obtaining Machine Epsilon
 - [HW #2](https://github.com/starlettkim/MAT3008/tree/master/hw2): Errors
-- [HW #3](https://github.com/starlettkim/MAT3008/tree/master/hw3): Root finding
+- [HW #3](https://github.com/starlettkim/MAT3008/tree/master/hw3): Root Finding
+- [HW #4](https://github.com/starlettkim/MAT3008/tree/master/hw4): Root Finding (2)
