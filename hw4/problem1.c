@@ -17,9 +17,11 @@ void solve_problem1() {
 
     run_rtbis(f1, 0, 400, 1e-4);
     run_rtflsp(f1, 0, 400, 1e-4);
+    run_rtsec(f1, 0, 400, 1e-4);
     run_rtsafe(df1, 0, 400, 1e-4);
 
     run_rtbis(f1, 0, 400, 1e-6);
     run_rtflsp(f1, 0, 400, 1e-6);
+    run_rtsec(f1, 300, 400, 1e-6);
     run_rtsafe(df1, 0, 400, 1e-6);
 }
