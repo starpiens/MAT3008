@@ -10,11 +10,6 @@ s = 1.5
 intervals = 100
 samples = [1e2, 1e4, 1e5]
 
-result = sp.run([sys.argv[1]], stdout=sp.PIPE)
-result = result.stdout.decode(encoding='UTF-8')
-print(result)
-
-
 plt.figure(1, figsize=(10, 6))
 
 # Expected histogram
@@ -28,7 +23,14 @@ for i in range(len(samples)):
 
 # Actual histogram
 for i in range(len(samples)):
-    x = np.random.uniform(-3, 2, int(samples[i])+i+1)
+    result = sp.run([
+        sys.argv[1],
+        'uniform',
+        str(int(samples[i])),
+        str(a),
+        str(b)], stdout=sp.PIPE)
+    result = result.stdout.decode(encoding='UTF-8')
+    x = [float(j) for j in result.split()]
     plt.subplot(2, len(samples), len(samples)+i+1)
     plt.title('Actual\n(n=' + str(int(samples[i])) + ')')
     plt.xlabel('Number')
