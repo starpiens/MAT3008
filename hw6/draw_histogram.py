@@ -8,7 +8,7 @@ b = 2
 m = -0.5
 s = 1.5
 intervals = 100
-samples = [100, 10000, 100000]
+samples = [100, 1000, 10000, 100000, 1000000]
 
 # Uniform distribution
 def draw_uniform():
@@ -54,8 +54,8 @@ def draw_gaussian():
         plt.ylabel('Probability Density')
         plt.hist(x, intervals, density=True, facecolor='xkcd:blue green')
 
-plt.figure(1, figsize=(10, 6))
+plt.figure(1, figsize=(14, 6))
 draw_uniform()
-plt.figure(2, figsize=(10, 6))
+plt.figure(2, figsize=(14, 6))
 draw_gaussian()
 plt.show()
