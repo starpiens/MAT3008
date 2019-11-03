@@ -12,7 +12,7 @@ samples = [100, 10000, 100000]
 
 # Uniform distribution
 def draw_uniform():
-    # Expected histogram
+    # By Numpy
     for i in range(len(samples)):
         x = np.random.uniform(-3, 2, samples[i])
         plt.subplot(2, len(samples), i+1)
@@ -21,7 +21,7 @@ def draw_uniform():
         plt.ylabel('Probability Density')
         plt.hist(x, intervals, density=True, facecolor='xkcd:rose')
 
-    # Actual histogram
+    # By NR
     for i in range(len(samples)):
         result = sp.run([sys.argv[1], str(samples[i]), 'uniform'], stdout=sp.PIPE)
         result = result.stdout.decode(encoding='UTF-8')
@@ -34,7 +34,7 @@ def draw_uniform():
 
 # Gaussian distribution
 def draw_gaussian():
-    # Expected histogram
+    # By Numpy
     for i in range(len(samples)):
         x = m + s * np.random.randn(samples[i])
         plt.subplot(2, len(samples), i+1)
@@ -43,11 +43,11 @@ def draw_gaussian():
         plt.ylabel('Probability Density')
         plt.hist(x, intervals, density=True, facecolor='xkcd:rose')
 
-    # Actual histogram
+    # By NR
     for i in range(len(samples)):
         result = sp.run([sys.argv[1], str(samples[i]), 'gaussian'], stdout=sp.PIPE)
         result = result.stdout.decode(encoding='UTF-8')
-        x = [float(j) for j in result.split()]
+        x = [float(j) * s + m for j in result.split()]
         plt.subplot(2, len(samples), len(samples)+i+1)
         plt.title('By NR\n(n=' + str(samples[i]) + ')')
         plt.xlabel('X')
