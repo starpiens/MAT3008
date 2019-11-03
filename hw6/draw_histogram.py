@@ -8,54 +8,54 @@ b = 2
 m = -0.5
 s = 1.5
 intervals = 100
-samples = [1e2, 1e4, 1e5]
+samples = [100, 10000, 100000]
+
+# Uniform distribution
+def draw_uniform():
+    # Expected histogram
+    for i in range(len(samples)):
+        x = np.random.uniform(-3, 2, samples[i])
+        plt.subplot(2, len(samples), i+1)
+        plt.title('By NumPy\n(n=' + str(samples[i]) + ')')
+        plt.xlabel('X')
+        plt.ylabel('Probability Density')
+        plt.hist(x, intervals, density=True, facecolor='xkcd:rose')
+
+    # Actual histogram
+    for i in range(len(samples)):
+        result = sp.run([sys.argv[1], str(samples[i]), 'uniform'], stdout=sp.PIPE)
+        result = result.stdout.decode(encoding='UTF-8')
+        x = [float(j) * (b-a) + a for j in result.split()]
+        plt.subplot(2, len(samples), len(samples)+i+1)
+        plt.title('By NR\n(n=' + str(samples[i]) + ')')
+        plt.xlabel('X')
+        plt.ylabel('Probability Density')
+        plt.hist(x, intervals, density=True, facecolor='xkcd:blue green')
+
+# Gaussian distribution
+def draw_gaussian():
+    # Expected histogram
+    for i in range(len(samples)):
+        x = m + s * np.random.randn(samples[i])
+        plt.subplot(2, len(samples), i+1)
+        plt.title('By NumPy\n(n=' + str(samples[i]) + ')')
+        plt.xlabel('X')
+        plt.ylabel('Probability Density')
+        plt.hist(x, intervals, density=True, facecolor='xkcd:rose')
+
+    # Actual histogram
+    for i in range(len(samples)):
+        result = sp.run([sys.argv[1], str(samples[i]), 'gaussian'], stdout=sp.PIPE)
+        result = result.stdout.decode(encoding='UTF-8')
+        x = [float(j) for j in result.split()]
+        plt.subplot(2, len(samples), len(samples)+i+1)
+        plt.title('By NR\n(n=' + str(samples[i]) + ')')
+        plt.xlabel('X')
+        plt.ylabel('Probability Density')
+        plt.hist(x, intervals, density=True, facecolor='xkcd:blue green')
 
 plt.figure(1, figsize=(10, 6))
-
-# Expected histogram
-for i in range(len(samples)):
-    x = np.random.uniform(-3, 2, int(samples[i]))
-    plt.subplot(2, len(samples), i+1)
-    plt.title('Expected\n(n=' + str(int(samples[i])) + ')')
-    plt.xlabel('Number')
-    plt.ylabel('Count')
-    plt.hist(x, intervals, density=False, facecolor='xkcd:rose')
-
-# Actual histogram
-for i in range(len(samples)):
-    result = sp.run([
-        sys.argv[1],
-        'uniform',
-        str(int(samples[i])),
-        str(a),
-        str(b)], stdout=sp.PIPE)
-    result = result.stdout.decode(encoding='UTF-8')
-    x = [float(j) for j in result.split()]
-    plt.subplot(2, len(samples), len(samples)+i+1)
-    plt.title('Actual\n(n=' + str(int(samples[i])) + ')')
-    plt.xlabel('Number')
-    plt.ylabel('Count')
-    plt.hist(x, intervals, density=False, facecolor='xkcd:blue green')
-
-
+draw_uniform()
 plt.figure(2, figsize=(10, 6))
-
-# Expected histogram
-for i in range(len(samples)):
-    x = m + s * np.random.randn(int(samples[i]))
-    plt.subplot(2, len(samples), i+1)
-    plt.title('Expected\n(n=' + str(int(samples[i])) + ')')
-    plt.xlabel('Number')
-    plt.ylabel('Count')
-    plt.hist(x, intervals, density=False, facecolor='xkcd:rose')
-
-# Actual histogram
-for i in range(len(samples)):
-    x = m + s * np.random.randn(int(samples[i]))
-    plt.subplot(2, len(samples), len(samples)+i+1)
-    plt.title('Actual\n(n=' + str(int(samples[i])) + ')')
-    plt.xlabel('Number')
-    plt.ylabel('Count')
-    plt.hist(x, intervals, density=False, facecolor='xkcd:blue green')
-
+draw_gaussian()
 plt.show()
