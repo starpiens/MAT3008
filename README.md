@@ -7,3 +7,4 @@
 - [HW #4](hw4): Root Finding (2)
 - [HW #5](hw5): Linear Equation
 - [HW #6](hw6): Random Number Generation
+- [HW #7](hw7): Eigenvectors and Eigenvalues
