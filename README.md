@@ -1,5 +1,7 @@
 # MAT3008
-**Numerical Analysis**, Fall 2019.
+**Numerical Analysis**, Fall 2019.  
+
+![](img/histogram.png)
 
 - [HW #1](hw1): Obtaining Machine Epsilon
 - [HW #2](hw2): Errors
