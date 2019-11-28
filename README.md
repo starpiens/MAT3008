@@ -11,3 +11,4 @@
 - [HW #6](hw6): Random Number Generation
 - [HW #7](hw7): Eigenvectors and Eigenvalues
 - [HW #8](hw8): Linear Interpolation
+- [HW #9](hw9): Linear Data Fitting
