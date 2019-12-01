@@ -3,4 +3,11 @@ project(hw7 C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(hw7 main.c nrutil.c jacobi.c eigsrt.c ran0.c)
+include_directories(../nrc/include)
+
+add_executable(hw7
+        main.c
+        ../nrc/src/nrutil.c
+        ../nrc/src/jacobi.c
+        ../nrc/src/eigsrt.c
+        ../nrc/src/ran0.c)
