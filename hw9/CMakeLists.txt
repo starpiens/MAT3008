@@ -3,5 +3,9 @@ project(hw9)
 
 set(CMAKE_C_STANDARD 11)
 
+include_directories(../nrc/include)
+
 add_executable(hw9
-        main.c)
+        main.c
+        ../nrc/src/nrutil.c
+        ../nrc/src/gaussj.c)
