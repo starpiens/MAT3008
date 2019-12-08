@@ -5,7 +5,13 @@
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
 #include "opencv2/features2d.hpp"
+
+extern "C" {
 #include "nrutil.h"
+void mrqmin(float x[], float y[], float sig[], int ndata, float a[], int ia[],
+            int ma, float **covar, float **alpha, float *chisq,
+            void (*funcs)(float, float [], float *, float [], int), float *alamda);
+}
 
 using namespace std;
 using namespace cv;
@@ -72,20 +78,22 @@ void func_yp(float x, float a[], float *y, float dyda[], int na) {
 }
 
 void run_mrqmin(std::vector<pair<Point2f, Point2f>> correspondences) {
-    void mrqmin(float x[], float y[], float sig[], int ndata, float a[], int ia[],
-                int ma, float **covar, float **alpha, float *chisq,
-                void (*funcs)(float, float [], float *, float [], int), float *alamda);
     int ndata = correspondences.size();
     const int ma = 6;
     auto *x = ::vector(1, ndata);
     auto *y = ::vector(1, ndata);
     auto *sig = ::vector(1, ndata);
     auto *a = ::vector(1, ma);
-    auto *ia = ::ivector(1, ma);
-    auto **covar = ::matrix(1, ma, 1, ma);
-    auto **alpha = ::matrix(1, ma, 1, ma);
+    auto *ia = ivector(1, ma);
+    auto **covar = matrix(1, ma, 1, ma);
+    auto **alpha = matrix(1, ma, 1, ma);
     float chisq;
     float alamda;
+
+    for (int i = 1; i <= ndata; i++) {
+        x[i] = i;
+        sig[i] = i;
+    }
 
     // TODO: Initialize variables
     mrqmin(x, y, sig, ndata, a, ia, ma, covar, alpha, &chisq, func_xp, &alamda);
@@ -98,7 +106,7 @@ void run_mrqmin(std::vector<pair<Point2f, Point2f>> correspondences) {
     free_vector(sig, 1, ndata);
     free_vector(a, 1, ma);
     free_ivector(ia, 1, ma);
-    free_matrix(covr, 1, ma, 1, ma);
+    free_matrix(covar, 1, ma, 1, ma);
     free_matrix(alpha, 1, ma, 1, ma);
 }
 
