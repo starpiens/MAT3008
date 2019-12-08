@@ -9,6 +9,17 @@
 using namespace std;
 using namespace cv;
 
+Mat add_gaussian_noise(const Mat &src, double mean = 0.0, double std = 1.0) {
+    Mat noise_src(src.size(), src.type());
+    randn(noise_src, Scalar::all(mean), Scalar::all(std));
+
+    Mat ret;
+    src.convertTo(ret, src.type());
+    addWeighted(ret, 1.0, noise_src, 1.0, 0.0, ret);
+
+    return ret;
+}
+
 vector<pair<Point2f, Point2f>> get_correspondences(const Mat &left, const Mat &right, Mat *corr_img = nullptr) {
     const int DIST_THRESH = 30;
 
@@ -50,9 +61,11 @@ int main(int argc, char *argv[]) {
     Mat right_img = imread(argv[2]);
     Mat corr_img;
 
+    right_img = add_gaussian_noise(right_img, 0, 50);
     auto correspondences = get_correspondences(left_img, right_img, &corr_img);
     imshow("matches", corr_img);
     waitKey(0);
+    cout << correspondences.size();
 
     return 0;
 }
