@@ -50,13 +50,14 @@ std::vector<pair<Point2f, Point2f>> get_correspondences(const Mat &left, const M
     std::vector<DMatch> matches;
     matcher = DescriptorMatcher::create("BruteForce-Hamming");
     matcher->match(left_descriptors, right_descriptors, matches);
-    matches.end() = remove_if(matches.begin(), matches.end(), [](DMatch i) -> bool {
-      return i.distance > DIST_THRESH;
-    });
+    matches.erase(
+            remove_if(matches.begin(), matches.end(), [](DMatch i) -> bool {
+              return i.distance > DIST_THRESH;
+            }), matches.end());
+
     if (corr_img != nullptr) {
         drawMatches(left, left_keypoints, right, right_keypoints, matches, *corr_img);
     }
-
     std::vector<pair<Point2f, Point2f>> ret;
     ret.reserve(matches.size());
     for (auto i : matches) {
@@ -77,7 +78,7 @@ void func_yp(float x, float a[], float *y, float dyda[], int na) {
     *y = (a[4] * d.x + a[5] * d.y + a[6]) / (a[7] * d.x + a[8] * d.y + 1);
 }
 
-void run_mrqmin(std::vector<pair<Point2f, Point2f>> correspondences) {
+void run_mrqmin(std::vector<pair<Point2f, Point2f>> &correspondences) {
     int ndata = correspondences.size();
     const int ma = 6;
     auto *x = ::vector(1, ndata);
@@ -120,13 +121,21 @@ int main(int argc, char *argv[]) {
     }
     Mat left_img = imread(argv[1]);
     Mat right_img = imread(argv[2]);
-    Mat corr_img;
 
-    right_img = add_gaussian_noise(right_img, 0, 0);
-    auto correspondences = get_correspondences(left_img, right_img, &corr_img);
-    imshow("matches", corr_img);
-    waitKey(0);
-    cout << correspondences.size();
+    auto correspondences = get_correspondences(left_img, right_img);
+    cout << "[ Original image ]" << endl;
+    cout << "# of correspondences: " << correspondences.size() << endl;
+    cout << "Accuracy of estimation: " << endl << endl;
+
+    const double gaussian_std[] = {1, 10, 30};
+    for (auto std : gaussian_std) {
+        auto left_img_noise = add_gaussian_noise(left_img, 0, std);
+        auto right_img_noise = add_gaussian_noise(right_img, 0, std);
+        correspondences = get_correspondences(left_img_noise, right_img_noise);
+        cout << "[ Gaussian noise with std = " << std << " ]" << endl;
+        cout << "# of correspondences: " << correspondences.size() << endl;
+        cout << "Accuracy of estimation: " << endl << endl;
+    }
 
     return 0;
 }
