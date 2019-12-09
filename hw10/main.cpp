@@ -66,16 +66,26 @@ std::vector<pair<Point2f, Point2f>> get_correspondences(const Mat &left, const M
     return ret;
 }
 
-// TODO: Fill up `dyda[]`
 void func_xp(float x, float a[], float *y, float dyda[], int na) {
-    auto &d = ::data_vec[(int) x];
-    *y = (a[1] * d.x + a[2] * d.y + a[3]) / (a[7] * d.x + a[8] * d.y + 1);
+    auto &d = data_vec[roundf(x)];
+    float divisor = (a[7] * d.x + a[8] * d.y + 1);
+    *y = (a[1] * d.x + a[2] * d.y + a[3]) / divisor;
+    dyda[1] = d.x / divisor;
+    dyda[2] = d.y / divisor;
+    dyda[3] = 1 / divisor;
+    dyda[7] = -d.x * *y / divisor;
+    dyda[8] = -d.y * *y / divisor;
 }
 
-// TODO: Fill up `dyda[]`
 void func_yp(float x, float a[], float *y, float dyda[], int na) {
-    auto &d = ::data_vec[(int) x];
-    *y = (a[4] * d.x + a[5] * d.y + a[6]) / (a[7] * d.x + a[8] * d.y + 1);
+    auto &d = data_vec[roundf(x)];
+    float divisor = (a[7] * d.x + a[8] * d.y + 1);
+    *y = (a[4] * d.x + a[5] * d.y + a[6]) / divisor;
+    dyda[4] = d.x / divisor;
+    dyda[5] = d.y / divisor;
+    dyda[6] = 1 / divisor;
+    dyda[7] = -d.x * *y / divisor;
+    dyda[8] = -d.y * *y / divisor;
 }
 
 void run_mrqmin(std::vector<pair<Point2f, Point2f>> &correspondences, float a[], const int ma) {
@@ -89,11 +99,9 @@ void run_mrqmin(std::vector<pair<Point2f, Point2f>> &correspondences, float a[],
     float chisq;
     float alamda;
 
-    for (int i = 1; i <= ndata; i++) {
-        x[i] = i;
-        sig[i] = i;
-    }
-    fill(a + 1, a + ma + 1, 1);
+    for (int i = 1; i <= ndata; i++)
+        x[i] = i - 1;
+    fill(sig + 1, sig + ndata + 1, 1);
     for (const auto &i : correspondences) {
         data_vec.push_back({i.first.x, i.first.y, i.second.x, i.second.y});
     }
@@ -101,18 +109,19 @@ void run_mrqmin(std::vector<pair<Point2f, Point2f>> &correspondences, float a[],
     for (int i = 1; i <= ndata; i++)
         y[i] = data_vec[i - 1].xp;
     ia[1] = ia[2] = ia[3] = ia[7] = ia[8] = 1;
+    alamda = -1;
     mrqmin(x, y, sig, ndata, a, ia, ma, covar, alpha, &chisq, func_xp, &alamda);
 
     for (int i = 1; i <= ndata; i++)
         y[i] = data_vec[i - 1].yp;
     ia[1] = ia[2] = ia[3] = 0;
     ia[4] = ia[5] = ia[6] = 1;
+    alamda = -1;
     mrqmin(x, y, sig, ndata, a, ia, ma, covar, alpha, &chisq, func_yp, &alamda);
 
     free_vector(x, 1, ndata);
     free_vector(y, 1, ndata);
     free_vector(sig, 1, ndata);
-    free_vector(a, 1, ma);
     free_ivector(ia, 1, ma);
     free_matrix(covar, 1, ma, 1, ma);
     free_matrix(alpha, 1, ma, 1, ma);
@@ -128,14 +137,17 @@ int main(int argc, char *argv[]) {
 
     const int ma = 8;
     auto a = ::vector(1, ma);
+    fill(a + 1, a + ma + 1, 2);
 
     auto correspondences = get_correspondences(left_img, right_img);
     run_mrqmin(correspondences, a, ma);
-    cout << "[ Original image ]" << endl;
+    cout << "===== Original image =====" << endl;
     cout << "# of correspondences: " << correspondences.size() << endl;
-    for (int i = 1; i <= ma; i++) {
-        cout << "a_" << i << " = " << a[i] << endl;
+    cout << "a = [";
+    for (int i = 1; i < ma; i++) {
+        cout << a[i] << ", ";
     }
+    cout << a[ma] << "]" << endl;
     cout << "Accuracy of estimation: " << endl << endl;
 
     const double gaussian_std[] = {1, 10, 30};
@@ -143,10 +155,17 @@ int main(int argc, char *argv[]) {
         auto left_img_noise = add_gaussian_noise(left_img, 0, std);
         auto right_img_noise = add_gaussian_noise(right_img, 0, std);
         correspondences = get_correspondences(left_img_noise, right_img_noise);
-        cout << "[ Gaussian noise with std = " << std << " ]" << endl;
+        run_mrqmin(correspondences, a, ma);
+        cout << "===== Gaussian noise with std=" << std << " =====" << endl;
         cout << "# of correspondences: " << correspondences.size() << endl;
+        cout << "a = [";
+        for (int i = 1; i < ma; i++) {
+            cout << a[i] << ", ";
+        }
+        cout << a[ma] << "]" << endl;
         cout << "Accuracy of estimation: " << endl << endl;
     }
 
+    free_vector(a, 1, ma);
     return 0;
 }
