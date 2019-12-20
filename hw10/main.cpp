@@ -1,9 +1,12 @@
+// #define _SHOW_CORRESPONDENCE_IMG
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <numeric>
+#include <cstdlib>
 #include "opencv2/core.hpp"
 #include "opencv2/highgui.hpp"
-#include "opencv2/imgproc.hpp"
 #include "opencv2/features2d.hpp"
 
 extern "C" {
@@ -99,21 +102,18 @@ void run_mrqmin(std::vector<pair<Point2f, Point2f>> &correspondences, float a[],
     float chisq;
     float alamda;
 
-    for (int i = 1; i <= ndata; i++)
-        x[i] = i - 1;
+    iota(x + 1, x + ndata + 1, 1);
     fill(sig + 1, sig + ndata + 1, 1);
-    for (const auto &i : correspondences) {
-        data_vec.push_back({i.first.x, i.first.y, i.second.x, i.second.y});
-    }
+    for_each(correspondences.begin(), correspondences.end(), [](const auto &i) {
+      data_vec.push_back({i.first.x, i.first.y, i.second.x, i.second.y});
+    });
 
-    for (int i = 1; i <= ndata; i++)
-        y[i] = data_vec[i - 1].xp;
+    for (int i = 1; i <= ndata; i++) y[i] = data_vec[i - 1].xp;
     ia[1] = ia[2] = ia[3] = ia[7] = ia[8] = 1;
     alamda = -1;
     mrqmin(x, y, sig, ndata, a, ia, ma, covar, alpha, &chisq, func_xp, &alamda);
 
-    for (int i = 1; i <= ndata; i++)
-        y[i] = data_vec[i - 1].yp;
+    for (int i = 1; i <= ndata; i++) y[i] = data_vec[i - 1].yp;
     ia[1] = ia[2] = ia[3] = 0;
     ia[4] = ia[5] = ia[6] = 1;
     alamda = -1;
@@ -139,7 +139,14 @@ int main(int argc, char *argv[]) {
     auto a = ::vector(1, ma);
     fill(a + 1, a + ma + 1, 2);
 
+#ifdef _SHOW_CORRESPONDENCE_IMG
+    Mat corr_img;
+    auto correspondences = get_correspondences(left_img, right_img, &corr_img);
+    imshow("Correspondences (Original)", corr_img);
+    waitKey(0);
+#else
     auto correspondences = get_correspondences(left_img, right_img);
+#endif
     run_mrqmin(correspondences, a, ma);
     cout << "===== Original image =====" << endl;
     cout << "# of correspondences: " << correspondences.size() << endl;
@@ -154,7 +161,15 @@ int main(int argc, char *argv[]) {
     for (auto std : gaussian_std) {
         auto left_img_noise = add_gaussian_noise(left_img, 0, std);
         auto right_img_noise = add_gaussian_noise(right_img, 0, std);
+#ifdef _SHOW_CORRESPONDENCE_IMG
+        stringstream winname;
+        winname << "Correspondences (Gaussian std = " << std << ")";
+        correspondences = get_correspondences(left_img, right_img, &corr_img);
+        imshow(winname.str(), corr_img);
+        waitKey(0);
+#else
         correspondences = get_correspondences(left_img_noise, right_img_noise);
+#endif
         run_mrqmin(correspondences, a, ma);
         cout << "===== Gaussian noise with std=" << std << " =====" << endl;
         cout << "# of correspondences: " << correspondences.size() << endl;
@@ -169,3 +184,5 @@ int main(int argc, char *argv[]) {
     free_vector(a, 1, ma);
     return 0;
 }
+
+#undef _SHOW_CORRESPONDENCE_IMG
